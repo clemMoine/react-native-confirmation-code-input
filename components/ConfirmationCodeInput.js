@@ -35,7 +35,6 @@ export default class ConfirmationCodeInput extends Component {
     activeColor: 'rgba(255, 255, 255, 1)',
     inactiveColor: 'rgba(255, 255, 255, 0.2)',
     space: 8,
-    keyboardType: 'name-phone-pad',
     compareWithCode: '',
     ignoreCase: false
   };
@@ -195,11 +194,15 @@ export default class ConfirmationCodeInput extends Component {
     }
   }
   
-  _onKeyPress(e) {
+  _onKeyPress(e ,id) {
+
     if (e.nativeEvent.key === 'Backspace') {
       const { currentIndex } = this.state;
       const nextIndex = currentIndex > 0 ? currentIndex - 1 : 0;
       this._setFocus(nextIndex);
+      
+    }else {
+      this._onInputCode(e.nativeEvent.key, id)
     }
   }
   
@@ -263,19 +266,15 @@ export default class ConfirmationCodeInput extends Component {
           ]}
           underlineColorAndroid="transparent"
           selectionColor={activeColor}
-          keyboardType={this.props.keyboardType}
           returnKeyType={'done'}
           {...this.props}
           autoFocus={autoFocus && id == 0}
           onFocus={() => this._onFocus(id)}
-          value={this.state.codeArr[id] ? this.state.codeArr[id].toString() : ''}
-          onChangeText={text => this._onInputCode(text, id)}
-          onKeyPress={(e) => this._onKeyPress(e)}
+          onKeyPress={(e) => this._onKeyPress(e , id)}
           maxLength={1}
         />
       )
     }
-    
     return (
       <View style={[styles.container, this._getContainerStyle(size, inputPosition), containerStyle]}>
         {codeInputs}
