@@ -19,6 +19,7 @@ export default class ConfirmationCodeInput extends Component {
     inactiveColor: PropTypes.string,
     ignoreCase: PropTypes.bool,
     autoFocus: PropTypes.bool,
+    keyboardType: PropTypes.string,
     codeInputStyle: TextInput.propTypes.style,
     containerStyle: viewPropTypes.style,
     onFulfill: PropTypes.func,
@@ -34,6 +35,7 @@ export default class ConfirmationCodeInput extends Component {
     activeColor: 'rgba(255, 255, 255, 1)',
     inactiveColor: 'rgba(255, 255, 255, 0.2)',
     space: 8,
+    keyboardType: 'name-phone-pad',
     compareWithCode: '',
     ignoreCase: false
   };
@@ -261,7 +263,7 @@ export default class ConfirmationCodeInput extends Component {
           ]}
           underlineColorAndroid="transparent"
           selectionColor={activeColor}
-          keyboardType={'name-phone-pad'}
+          keyboardType={this.props.keyboardType}
           returnKeyType={'done'}
           {...this.props}
           autoFocus={autoFocus && id == 0}
