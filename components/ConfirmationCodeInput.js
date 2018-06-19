@@ -19,7 +19,6 @@ export default class ConfirmationCodeInput extends Component {
     inactiveColor: PropTypes.string,
     ignoreCase: PropTypes.bool,
     autoFocus: PropTypes.bool,
-    keyboardType: PropTypes.string,
     codeInputStyle: TextInput.propTypes.style,
     containerStyle: viewPropTypes.style,
     onFulfill: PropTypes.func,
@@ -194,17 +193,20 @@ export default class ConfirmationCodeInput extends Component {
     }
   }
   
-  _onKeyPress(e ,id) {
-
+  _onKeyPress(e) {
     if (e.nativeEvent.key === 'Backspace') {
+      // Return if duration between previous key press and backspace is less than 20ms
+      if (Math.abs(this.lastKeyEventTimestamp - e.timeStamp) < 20) return;
+
       const { currentIndex } = this.state;
       const nextIndex = currentIndex > 0 ? currentIndex - 1 : 0;
       this._setFocus(nextIndex);
-      
-    }else {
-      this._onInputCode(e.nativeEvent.key, id)
+    } else {
+      // Record non-backspace key event time stamp
+      this.lastKeyEventTimestamp = e.timeStamp;
     }
   }
+
   
   _onInputCode(character, index) {
     const { codeLength, onFulfill, compareWithCode, ignoreCase } = this.props;
@@ -266,15 +268,19 @@ export default class ConfirmationCodeInput extends Component {
           ]}
           underlineColorAndroid="transparent"
           selectionColor={activeColor}
+          keyboardType={'name-phone-pad'}
           returnKeyType={'done'}
           {...this.props}
           autoFocus={autoFocus && id == 0}
           onFocus={() => this._onFocus(id)}
-          onKeyPress={(e) => this._onKeyPress(e , id)}
+          value={this.state.codeArr[id] ? this.state.codeArr[id].toString() : ''}
+          onChangeText={text => this._onInputCode(text, id)}
+          onKeyPress={(e) => this._onKeyPress(e)}
           maxLength={1}
         />
       )
     }
+    
     return (
       <View style={[styles.container, this._getContainerStyle(size, inputPosition), containerStyle]}>
         {codeInputs}
